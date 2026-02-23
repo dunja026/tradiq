@@ -22,4 +22,24 @@ public class Position {
 
     @Column(nullable = false)
     private Integer shares;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public Integer getShares() {
+        return shares;
+    }
+
+    public void setShares(Integer shares) {
+        this.shares = shares;
+    }
 }

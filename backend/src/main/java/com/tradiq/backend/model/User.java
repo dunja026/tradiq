@@ -42,6 +42,28 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
 
+    // *** Constructors
+
+    protected User() {
+        // JPA only
+    }
+
+    private User(String email, String passwordHash) {
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.cashBalance = new BigDecimal("10000.00");
+    }
+
+    // User factory
+    public static User register(String email, String passwordHash) {
+        if (email == null || email.isBlank()) throw new IllegalArgumentException("Email is required");
+        if (passwordHash == null) throw new IllegalArgumentException("Password hash is required");
+        return new User(email, passwordHash);
+    }
+
+    // ***
+
+
     // Getters / setters
     public long getId() {
         return id;
@@ -51,26 +73,23 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPasswordHash() {
         return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public BigDecimal getCashBalance() {
         return cashBalance;
     }
 
-    // TODO make domain method for deposit and withdrawing instead of setCashBalance
-    public void setCashBalance(BigDecimal cashBalance) {
-        this.cashBalance = cashBalance;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    // *** Domain methods
 
     public void deposit(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -89,16 +108,10 @@ public class User {
         this.cashBalance = this.cashBalance.subtract(amount);
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
     public void deactivate() {
         if (!Boolean.TRUE.equals(isActive)) return;
         isActive = false;
     }
+
+    // ***
 }
